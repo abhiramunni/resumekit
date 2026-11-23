@@ -374,4 +374,84 @@ footer.site .fine{max-width:720px}
   </div>
 </div><!-- /desk -->
 </div><!-- /wrap -->
+<div class="wrap">
+  <section class="card sec" id="coach" aria-labelledby="coachH" style="margin-top:6px">
+    <p class="eyebrow">Bullet coach</p>
+    <h2 id="coachH">Turn a duty into an achievement</h2>
+    <p class="sub">Paste one bullet from your resume. The coach scores it on four things recruiters scan for: an action verb, a number, the right length, and no filler words.</p>
+    <div class="field"><label for="coachInput">Your bullet</label>
+    <textarea id="coachInput" rows="2" placeholder="Responsible for managing the website and various duties."></textarea></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button type="button" class="btn small" id="coachTryWeak">Try a weak one</button>
+      <button type="button" class="btn small" id="coachTryStrong">Try a strong one</button>
+      <button type="button" class="btn small primary" id="coachUse">Use this bullet in my resume</button>
+    </div>
+    <div class="coach-score">
+      <div class="bar" aria-hidden="true"><i id="coachFill" style="width:0%"></i></div>
+      <b id="coachScore">– / 100</b>
+    </div>
+    <p id="coachVerdict" class="helper" style="margin:10px 0 0">Type a bullet above to get a score and a plain-words tip.</p>
+  </section>
+
+  <section class="card sec" id="versions" aria-labelledby="verH" style="margin-top:18px">
+    <p class="eyebrow">Tailor it</p>
+    <h2 id="verH">Saved versions</h2>
+    <p class="sub">One resume per role you apply for. Save this one, tweak the summary and skills for the next role, and save that too — up to 3 versions, all on this device.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <input id="verName" type="text" placeholder="Version name, e.g. Frontend" style="flex:1;min-width:180px;border:1.5px solid var(--line2);border-radius:10px;padding:10px 12px;background:#fffdf8">
+      <button type="button" class="btn primary" id="verSave">Save this version</button>
+    </div>
+    <ul class="ver-list" id="verList"></ul>
+  </section>
+
+  <div class="band">
+    <img src="{{FLATLAY_IMG}}" alt="Flat lay of printed resumes, glasses, a brass pen and coffee on linen" loading="lazy">
+    <div class="cap"><b>Print it. Read it out loud. Then send it.</b><span>A resume that survives a 6-second skim is one you have read on paper first.</span></div>
+  </div>
+
+  <section class="guides" id="guides" aria-labelledby="guidesH">
+    <p class="eyebrow">Before you send it</p>
+    <h2 id="guidesH" class="serif" style="font-size:26px;margin-bottom:14px">Six things that actually matter</h2>
+    <div class="guide-grid">
+      <article class="card guide"><h3>One page, always</h3><p>Freshers and under-5-years: one page. If it spills over, cut the oldest bullet first, not the newest achievement.</p></article>
+      <article class="card guide"><h3>Numbers beat adjectives</h3><p>"Improved load time by 40%" is proof. "Hard-working team player" is a claim anyone can type. Keep the proof, drop the claim.</p></article>
+      <article class="card guide"><h3>Match the job post's words</h3><p>If the post says "React", write "React" — not "a popular JavaScript library". The screening software matches exact words.</p></article>
+      <article class="card guide"><h3>Action verbs first</h3><p>Built, shipped, cut, led, fixed. Never start a bullet with "Responsible for", "Helped with" or "Worked on" — they say nothing.</p></article>
+      <article class="card guide"><h3>Honest about the degree</h3><p>Degree pending? Write "B.Tech IT, 2021–2025 (awaited)" and list what you can do. Never claim a certificate you do not hold.</p></article>
+      <article class="card guide"><h3>PDF, named properly</h3><p>Send a PDF named "Asha-Nair-Resume.pdf", not "Resume-final-final-v3.pdf". Print from this page — no watermark, no signup.</p></article>
+    </div>
+  </section>
+
+  <section class="card sec settings" aria-labelledby="setH" style="margin-top:18px">
+    <p class="eyebrow">Your data</p>
+    <h2 id="setH">Everything stays on your device</h2>
+    <p class="sub">Your resume lives in this browser only. Nothing is uploaded anywhere. The sample below is a fictional fresher — replace it with your own details, or clear it and start blank.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button type="button" class="btn" id="btnRemoveSamples">Remove sample resume</button>
+      <button type="button" class="btn ghost" id="btnErase">Erase everything</button>
+    </div>
+    <p class="helper" style="margin:12px 0 0" id="saveNote">Saved on this device just now.</p>
+  </section>
+</div>
+
+<footer class="site">
+  <div class="wrap">
+    <p class="fine">ResumeKit is a free, single-file tool. It gives general guidance, not career advice — check the job post and your college's placement cell for role-specific rules. Your data never leaves this browser.</p>
+    <p class="fine" style="margin-top:8px">Made for freshers applying in India · ATS checks are common-sense rules, not a guarantee of shortlisting.</p>
+  </div>
+</footer>
+
+<div id="tour" role="dialog" aria-label="Quick tour">
+  <div class="card">
+    <p class="eyebrow" id="tourStep">Step 1 of 3</p>
+    <h3 id="tourTitle">Type on the left</h3>
+    <p id="tourText">Fill in your details in the editor. Every keystroke updates the live preview on the right — no save button needed.</p>
+    <div class="row">
+      <button type="button" class="btn ghost small" id="tourSkip">Skip tour</button>
+      <button type="button" class="btn primary small" id="tourNext">Next</button>
+      <span class="dots" aria-hidden="true"><i class="on"></i><i></i><i></i></span>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
 <!-- @@NEXT@@ -->
