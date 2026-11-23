@@ -74,3 +74,5 @@ server, no tracking. "Erase everything" wipes it all in two taps.
 ## Run it locally
 
 Open `index.html` in any modern browser. No build step, no server.
+
+Built 23 Nov 2026.
