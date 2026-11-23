@@ -897,4 +897,62 @@ function fallbackCopy(text){
   try{ document.execCommand('copy'); }catch(e){}
   document.body.removeChild(ta);
 }
-<!-- @@NEXT@@ -->
+var TOUR=[
+  {t:'Type on the left', x:'Fill in your details in the editor. Every keystroke updates the live preview on the right — no save button needed.'},
+  {t:'Watch the ATS score', x:'The ring at the top tells you what screening software would think. Fix the red checks — each one is worth real points.'},
+  {t:'Print it as a PDF', x:'When the score is green and the page pill says "1 page", hit Print / Save as PDF. Name the file Your-Name-Resume.pdf and send it.'}
+];
+var tourStep=0;
+function showTour(i){
+  tourStep=i;
+  var t=document.getElementById('tour'); if(!t) return;
+  document.getElementById('tourStep').textContent='Step '+(i+1)+' of 3';
+  document.getElementById('tourTitle').textContent=TOUR[i].t;
+  document.getElementById('tourText').textContent=TOUR[i].x;
+  document.getElementById('tourNext').textContent=i===2?'Done':'Next';
+  var dots=qa('#tour .dots i');
+  dots.forEach(function(d,j){ d.classList.toggle('on', j===i); });
+  t.classList.add('show');
+}
+function hideTour(){ var t=document.getElementById('tour'); if(t) t.classList.remove('show'); }
+function bindTour(){
+  var nx=document.getElementById('tourNext'), sk=document.getElementById('tourSkip');
+  if(nx) nx.addEventListener('click', function(){
+    if(tourStep>=2){ hideTour(); state.coachDone=true; save(); }
+    else showTour(tourStep+1);
+  });
+  if(sk) sk.addEventListener('click', function(){ hideTour(); state.coachDone=true; save(); });
+}
+function endIntro(){
+  var intro=document.getElementById('intro');
+  if(intro) intro.classList.add('done');
+  try{ localStorage.setItem('resumekit-seen','1'); }catch(e){}
+  if(!state.coachDone) setTimeout(function(){ showTour(0); }, 450);
+}
+function initIntro(){
+  var intro=document.getElementById('intro');
+  var seen=null;
+  try{ seen=localStorage.getItem('resumekit-seen'); }catch(e){}
+  var skip=document.getElementById('skipIntro');
+  if(skip) skip.addEventListener('click', endIntro);
+  if(intro) intro.addEventListener('click', function(e){ if(e.target===intro) endIntro(); });
+  if(seen){ if(intro){ intro.style.transition='none'; intro.classList.add('done'); } }
+  else { setTimeout(endIntro, 3600); }
+}
+function init(){
+  qa('.tpl-btn').forEach(function(x){ x.classList.toggle('on', x.getAttribute('data-tpl')===state.template); });
+  fillEditor(); renderAll(); renderCoach(); bindEditor(); bindTour(); initIntro();
+}
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded', init);
+} else { init(); }
+
+window.ResumeKit={
+  state:state, scoreATS:scoreATS, atsChecks:atsChecks, estimateLines:estimateLines,
+  scoreBullet:scoreBullet, plainText:plainText, sampleResume:sampleResume,
+  blankResume:blankResume, renderAll:renderAll, endIntro:endIntro, showTour:showTour
+};
+})();
+</script>
+</body>
+</html>
