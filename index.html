@@ -116,4 +116,115 @@ header.mast{position:sticky;top:0;z-index:40;background:rgba(250,243,231,.92);ba
 .tpl-btn{border:1.5px solid var(--line2);background:var(--card);border-radius:12px;padding:9px 14px;font-weight:700;font-size:13.5px}
 .tpl-btn.on{border-color:var(--terra);background:#fbeede;color:var(--terra-d)}
 
-  /* @@NEXT@@ */
+  /* ---- editor forms ---- */
+details.ed{border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden}
+details.ed + details.ed{margin-top:10px}
+details.ed summary{cursor:pointer;padding:15px 18px;font-weight:800;font-size:15.5px;list-style:none;display:flex;align-items:center;gap:10px}
+details.ed summary::-webkit-details-marker{display:none}
+details.ed summary .n{width:26px;height:26px;border-radius:50%;background:var(--paper2);border:1px solid var(--line2);display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-family:Fraunces,serif;flex:none}
+details.ed summary .tag{margin-left:auto;font-size:12px;color:var(--ink3);font-weight:600}
+details.ed .body{padding:0 18px 18px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:13px;font-weight:700;margin-bottom:5px;color:var(--ink2)}
+.field input,.field textarea,.field select{width:100%;border:1.5px solid var(--line2);border-radius:10px;padding:10px 12px;background:#fffdf8;outline:none}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--bronze);box-shadow:0 0 0 3px rgba(180,118,42,.18)}
+.field textarea{min-height:74px;resize:vertical}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.hint{font-size:12.5px;color:var(--ink3);margin-top:4px}
+.skills{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.skills .chip button{border:0;background:none;font-size:15px;line-height:1;color:var(--terra-d);padding:0;cursor:pointer}
+.exp-card{border:1px solid var(--line);border-radius:12px;padding:14px;background:#fffdf8;margin-bottom:12px}
+.exp-card .rowline{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.exp-card .rowline b{font-size:14.5px}
+.linkbtn{border:0;background:none;color:var(--terra-d);font-weight:700;font-size:13px;padding:4px 6px}
+/* ---- preview sheet ---- */
+.sheet-wrap{display:flex;flex-direction:column;gap:10px}
+.sheet-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.sheet-toolbar .spacer{flex:1}
+#sheet{background:#fffdf8;border:1px solid var(--line2);border-radius:6px;box-shadow:0 18px 44px rgba(36,26,18,.22);padding:34px 36px 30px;min-height:760px;font-size:14px;line-height:1.5;color:#241a12}
+#sheet .pv-name{font-family:Fraunces,serif;font-size:30px;font-weight:900;line-height:1.05}
+#sheet .pv-role{font-size:15px;font-weight:700;color:var(--terra-d);margin-top:3px}
+#sheet .pv-contact{font-size:12.5px;color:#5c4a36;margin-top:6px}
+#sheet hr{border:0;border-top:2px solid #241a12;margin:14px 0}
+#sheet h3{font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-family:Inter,sans-serif;font-weight:800;color:#241a12;margin:16px 0 6px}
+#sheet p{margin:0 0 8px}
+#sheet ul{margin:0 0 8px;padding-left:18px}
+#sheet li{margin-bottom:4px}
+#sheet .pv-skills{display:flex;flex-wrap:wrap;gap:6px}
+#sheet .pv-skills span{border:1px solid #d8c49a;border-radius:999px;padding:2px 9px;font-size:12px;font-weight:600;background:#faf3e7}
+#sheet .pv-job{margin-bottom:12px}
+#sheet .pv-job .t{display:flex;justify-content:space-between;gap:10px;font-weight:800}
+#sheet .pv-job .o{font-size:13px;color:#5c4a36;font-style:italic}
+#sheet .pv-edu .t{display:flex;justify-content:space-between;gap:10px;font-weight:800}
+#sheet.tpl-editorial{display:grid;grid-template-columns:150px 1fr;gap:0;padding:0;overflow:hidden}
+#sheet.tpl-editorial .side{background:#241a12;color:#faf3e7;padding:28px 18px}
+#sheet.tpl-editorial .side h3{color:#d9a441}
+#sheet.tpl-editorial .side .pv-contact{color:rgba(250,243,231,.8)}
+#sheet.tpl-editorial .side .pv-skills span{background:transparent;border-color:rgba(250,243,231,.4);color:#faf3e7}
+#sheet.tpl-editorial .main{padding:28px 26px}
+#sheet.tpl-editorial .pv-name{font-size:26px}
+#sheet.tpl-compact{padding:24px 28px;font-size:13px;min-height:640px}
+#sheet.tpl-compact .pv-name{font-size:24px}
+#sheet.tpl-compact h3{margin:11px 0 4px}
+/* ---- coach / versions / guides ---- */
+.coach-score{display:flex;align-items:center;gap:14px;margin-top:12px}
+.coach-score .bar{flex:1;height:12px;background:var(--paper2);border-radius:99px;overflow:hidden}
+.coach-score .bar i{display:block;height:100%;background:var(--bronze);transition:width .3s ease}
+.coach-score b{font-family:Fraunces,serif;font-size:22px;min-width:64px;text-align:right}
+.ver-list{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.ver-list li{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:14px;background:#fffdf8}
+.ver-list li .nm{font-weight:700}
+.ver-list li .dt{color:var(--ink3);font-size:12.5px}
+.ver-list li .acts{margin-left:auto;display:flex;gap:4px}
+.guide-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.guide{padding:18px}
+.guide h3{font-size:18px;margin-bottom:6px}
+.guide p{font-size:14px;color:var(--ink2);margin:0}
+.band{margin:26px 0;border-radius:22px;overflow:hidden;position:relative}
+.band img{width:100%;height:230px;object-fit:cover;animation:kb 30s ease-in-out infinite alternate}
+.band .cap{position:absolute;left:0;right:0;bottom:0;padding:18px 22px;background:linear-gradient(180deg,transparent,rgba(29,19,11,.72));color:#faf3e7}
+.band .cap b{font-family:Fraunces,serif;font-size:20px;display:block}
+.band .cap span{font-size:13.5px;color:rgba(250,243,231,.85)}
+footer.site{border-top:1px solid var(--line);margin-top:30px;padding:26px 0 40px;color:var(--ink3);font-size:13.5px}
+footer.site .fine{max-width:720px}
+/* tour */
+#tour{position:fixed;inset:0;z-index:80;background:rgba(29,19,11,.55);display:none;align-items:flex-end;justify-content:center;padding:18px}
+#tour.show{display:flex}
+#tour .card{background:var(--card);border-radius:18px;max-width:520px;width:100%;padding:24px;box-shadow:var(--shadow)}
+#tour .card h3{font-size:22px;margin-bottom:6px}
+#tour .card p{color:var(--ink2);font-size:15px}
+#tour .row{display:flex;gap:10px;margin-top:16px;align-items:center}
+#tour .dots{margin-left:auto;display:flex;gap:6px}
+#tour .dots i{width:8px;height:8px;border-radius:50%;background:var(--line2)}
+#tour .dots i.on{background:var(--terra)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#faf3e7;padding:11px 20px;border-radius:999px;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:.3s;z-index:85}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media (max-width:960px){
+  .desk{grid-template-columns:1fr}
+  .desk-right{position:static}
+  .guide-grid{grid-template-columns:1fr 1fr}
+  .checks{grid-template-columns:1fr}
+  .mast nav{display:none}
+}
+@media (max-width:600px){
+  .guide-grid{grid-template-columns:1fr}
+  .grid2,.grid3{grid-template-columns:1fr}
+  #sheet{padding:22px 20px}
+  #sheet.tpl-editorial{grid-template-columns:1fr}
+  .hero img.bg{height:360px}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero img.bg,.band img{animation:none}
+  #intro .bar i{animation-duration:.4s}
+}
+@media print{
+  header.mast,.hero,.desk-left,.band,.guides,.settings,footer.site,#tour,#intro,.toast,.sheet-toolbar{display:none!important}
+  body{background:#fff}
+  .desk{display:block;padding:0}
+  .desk-right{position:static}
+  #sheet{box-shadow:none;border:0;margin:0;min-height:0}
+}
+</style>
+</head>
+<body>
