@@ -268,4 +268,37 @@ footer.site .fine{max-width:720px}
     </div>
   </div>
 </section>
+<div class="wrap">
+<div class="desk" id="editor">
+  <div class="desk-left">
+
+    <section class="card sec" aria-labelledby="atsH">
+      <p class="eyebrow">Live check</p>
+      <h2 id="atsH">Your ATS score</h2>
+      <p class="sub">Recruiters' software reads your resume before a human does. Fix the red items and your score climbs as you type.</p>
+      <div class="ats">
+        <div class="ring" aria-hidden="true">
+          <svg width="132" height="132" viewBox="0 0 132 132">
+            <circle cx="66" cy="66" r="56" fill="none" stroke="#f2e7d0" stroke-width="11"></circle>
+            <circle id="ringFg" cx="66" cy="66" r="56" fill="none" stroke="#2e7d4f" stroke-width="11" stroke-linecap="round" stroke-dasharray="351.8" stroke-dashoffset="351.8"></circle>
+          </svg>
+          <div class="val"><b id="atsScore">0</b><span>out of 100</span></div>
+        </div>
+        <div class="body">
+          <p class="verdict" id="atsVerdict">Start typing to get your score.</p>
+          <ul class="checks" id="atsList"></ul>
+        </div>
+      </div>
+      <div style="margin-top:16px;border-top:1px solid var(--line);padding-top:14px">
+        <div class="lenrow"><span id="lenLabel">Estimated length: — lines</span><b id="lenVerdict">—</b></div>
+        <div class="lenbar" aria-hidden="true"><i id="lenFill" style="width:0%"></i></div>
+        <p class="helper" style="margin:0">One page is about 42 lines in this layout. If the bar turns red, trim a bullet or shorten your summary — recruiters read one page, not two.</p>
+      </div>
+      <div class="tplrow" role="group" aria-label="Choose a template">
+        <span class="helper" style="align-self:center;font-weight:700">Template:</span>
+        <button type="button" class="tpl-btn on" data-tpl="classic">Classic</button>
+        <button type="button" class="tpl-btn" data-tpl="editorial">Editorial</button>
+        <button type="button" class="tpl-btn" data-tpl="compact">Compact</button>
+      </div>
+    </section>
 <!-- @@NEXT@@ -->
