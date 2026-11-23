@@ -454,4 +454,71 @@ footer.site .fine{max-width:720px}
   </div>
 </div>
 <div class="toast" id="toast" role="status"></div>
+<script>
+(function(){
+'use strict';
+var LS_KEY='resumekit-v1';
+var VERBS=['built','cut','led','redesigned','wrote','fixed','shipped','launched','raised','improved','automated','designed','developed','created','delivered','reduced','increased','grew','managed','organised','organized','streamlined','boosted','saved','won','taught','mentored','drafted','tested','deployed','migrated','integrated','doubled','halved','trained','presented','negotiated','planned','coordinated','founded','revamped','simplified','accelerated','scaled'];
+var WEAK_RE=/responsible for|helped with|worked on|various|duties|assisted|in charge of/i;
+
+function sampleResume(){
+  return {
+    name:'Asha Nair', role:'Junior Full-Stack Developer',
+    email:'asha.nair@example.com', phone:'+91 98765 43210',
+    loc:'Bengaluru, Karnataka', link:'linkedin.com/in/asha-nair',
+    summary:'B.Tech IT graduate who builds fast, accessible web apps. Shipped 4 live projects, led a 3-person team, and cut page load time by 40% on a college portal.',
+    skills:['HTML','CSS','JavaScript','React','Node.js','Git','SQL','Figma'],
+    exp:[
+      {role:'Full-Stack Developer (Final-Year Project)', org:'Alumni Portal — College Project', dates:'Jan 2025 – Apr 2025', bullets:[
+        'Built a college alumni portal used by 400+ students and 60 alumni.',
+        'Cut page load time by 40% by lazy-loading images and code-splitting routes.',
+        'Led a 3-person team through weekly sprints and shipped on time.']},
+      {role:'Web Development Intern', org:'Web Studio — Internship', dates:'Feb 2025 – Jun 2025', bullets:[
+        'Redesigned the client dashboard, raising task completion by 25%.',
+        'Wrote 30+ reusable components in React and Tailwind.',
+        'Fixed 45 bugs reported in QA, clearing the release backlog in 2 weeks.']}
+    ],
+    edu:[{degree:'B.Tech, Information Technology', school:'Amal Jyothi College of Engineering', dates:'2021 – 2025', note:'Final-year project: alumni portal'}]
+  };
+}
+function blankResume(){
+  return {name:'', role:'', email:'', phone:'', loc:'', link:'', summary:'', skills:[], exp:[], edu:[]};
+}
+var state;
+try{
+  var raw=localStorage.getItem(LS_KEY);
+  state=raw?JSON.parse(raw):null;
+}catch(e){ state=null; }
+if(!state || !state.resume){
+  state={samples:true, template:'classic', resume:sampleResume(), versions:[], coachDone:false};
+}
+if(!state.versions) state.versions=[];
+if(!state.template) state.template='classic';
+
+function save(){
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){}
+  var n=document.getElementById('saveNote');
+  if(n) n.textContent='Saved on this device just now.';
+}
+function esc(s){
+  return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function $(s){ return document.querySelector(s); }
+function qa(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); }
+function toast(msg){
+  var t=document.getElementById('toast'); if(!t) return;
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); },2600);
+}
+function wordCount(s){ var w=String(s||'').trim().split(/\s+/).filter(Boolean); return String(s||'').trim()? w.length : 0; }
+function startsVerb(text){
+  var first=String(text||'').trim().split(/\s+/)[0]||'';
+  first=first.replace(/[^A-Za-z]/g,'').toLowerCase();
+  return VERBS.indexOf(first)>=0;
+}
+function allBullets(r){
+  var out=[];
+  (r.exp||[]).forEach(function(e){ (e.bullets||[]).forEach(function(b){ if(String(b).trim()) out.push(String(b).trim()); }); });
+  return out;
+}
 <!-- @@NEXT@@ -->
