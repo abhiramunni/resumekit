@@ -777,4 +777,124 @@ function todayStr(){
   var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   return d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear();
 }
+function fillEditor(){
+  var r=state.resume;
+  var set=function(id,v){ var el=document.getElementById(id); if(el) el.value=v||''; };
+  set('fName',r.name); set('fRole',r.role); set('fEmail',r.email); set('fPhone',r.phone);
+  set('fLoc',r.loc); set('fLink',r.link); set('fSummary',r.summary);
+  renderSkills(); renderExp(); renderEdu();
+}
+function renderAll(){
+  renderPreview(); renderATS(); renderVersions();
+}
+function bindEditor(){
+  var map={fName:'name',fRole:'role',fEmail:'email',fPhone:'phone',fLoc:'loc',fLink:'link',fSummary:'summary'};
+  Object.keys(map).forEach(function(id){
+    var el=document.getElementById(id);
+    if(!el) return;
+    el.addEventListener('input', function(){
+      state.resume[map[id]]=el.value;
+      save(); renderPreview(); renderATS();
+    });
+  });
+  var si=document.getElementById('skillInput');
+  if(si){
+    si.addEventListener('keydown', function(e){
+      if(e.key!=='Enter') return;
+      e.preventDefault();
+      var v=si.value.trim();
+      if(!v) return;
+      if(state.resume.skills.indexOf(v)<0) state.resume.skills.push(v);
+      si.value='';
+      save(); renderSkills(); renderPreview(); renderATS();
+    });
+  }
+  var addExp=document.getElementById('addExp');
+  if(addExp) addExp.addEventListener('click', function(){
+    state.resume.exp.push({role:'', org:'', dates:'', bullets:['']});
+    save(); renderExp(); renderPreview(); renderATS();
+    var cards=qa('#expList .exp-card'); var last=cards[cards.length-1];
+    if(last){ if(last.scrollIntoView) last.scrollIntoView({behavior:'smooth', block:'center'}); var inp=last.querySelector('input'); if(inp) inp.focus(); }
+  });
+  var addEdu=document.getElementById('addEdu');
+  if(addEdu) addEdu.addEventListener('click', function(){
+    state.resume.edu.push({degree:'', school:'', dates:'', note:''});
+    save(); renderEdu(); renderPreview(); renderATS();
+  });
+  qa('.tpl-btn').forEach(function(b){
+    b.addEventListener('click', function(){
+      state.template=b.getAttribute('data-tpl');
+      qa('.tpl-btn').forEach(function(x){ x.classList.toggle('on', x===b); });
+      save(); renderPreview();
+    });
+  });
+  var ci=document.getElementById('coachInput');
+  if(ci) ci.addEventListener('input', renderCoach);
+  var tw=document.getElementById('coachTryWeak');
+  if(tw) tw.addEventListener('click', function(){
+    ci.value='Responsible for managing the website and various duties.';
+    renderCoach();
+  });
+  var ts=document.getElementById('coachTryStrong');
+  if(ts) ts.addEventListener('click', function(){
+    ci.value='Cut page load time by 40% by lazy-loading images and code-splitting routes.';
+    renderCoach();
+  });
+  var cu=document.getElementById('coachUse');
+  if(cu) cu.addEventListener('click', function(){
+    var t=ci.value.trim();
+    if(!t){ toast('Type a bullet first.'); return; }
+    if(!state.resume.exp.length) state.resume.exp.push({role:'', org:'', dates:'', bullets:[]});
+    var first=state.resume.exp[0];
+    if(!first.bullets) first.bullets=[];
+    first.bullets.push(t);
+    save(); renderExp(); renderPreview(); renderATS();
+    toast('Bullet added to your first experience card.');
+    var ed=document.getElementById('editor');
+    if(ed && ed.scrollIntoView) ed.scrollIntoView({behavior:'smooth'});
+  });
+  var vs=document.getElementById('verSave');
+  if(vs) vs.addEventListener('click', function(){
+    var nameEl=document.getElementById('verName');
+    var name=(nameEl.value||'').trim()||('Version '+(state.versions.length+1));
+    if(state.versions.length>=3){ toast('You already have 3 versions — delete one first.'); return; }
+    state.versions.push({name:name, savedAt:todayStr(), resume:JSON.parse(JSON.stringify(state.resume))});
+    nameEl.value='';
+    save(); renderVersions(); toast('Saved version "'+name+'".');
+  });
+  var cp=document.getElementById('btnCopyText');
+  if(cp) cp.addEventListener('click', function(){
+    var text=plainText(state.resume);
+    var done=function(){ toast('Plain-text resume copied.'); };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done, function(){ fallbackCopy(text); done(); });
+    } else { fallbackCopy(text); done(); }
+  });
+  var bp=document.getElementById('btnPrint');
+  if(bp) bp.addEventListener('click', function(){ window.print(); });
+  var rs=document.getElementById('btnRemoveSamples');
+  if(rs) rs.addEventListener('click', function(){
+    if(!state.samples){ toast('The sample is already gone.'); return; }
+    state.resume=blankResume(); state.samples=false;
+    save(); fillEditor(); renderAll(); toast('Sample removed — a blank page, all yours.');
+  });
+  var er=document.getElementById('btnErase');
+  if(er) er.addEventListener('click', function(){
+    if(!er.dataset.armed){
+      er.dataset.armed='1'; er.textContent='Tap again to erase everything';
+      setTimeout(function(){ delete er.dataset.armed; er.textContent='Erase everything'; },4000);
+      return;
+    }
+    delete er.dataset.armed; er.textContent='Erase everything';
+    state.resume=blankResume(); state.samples=false; state.versions=[];
+    save(); fillEditor(); renderAll(); renderCoach(); toast('Erased. Fresh start.');
+  });
+}
+function fallbackCopy(text){
+  var ta=document.createElement('textarea');
+  ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); }catch(e){}
+  document.body.removeChild(ta);
+}
 <!-- @@NEXT@@ -->
