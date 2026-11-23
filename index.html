@@ -301,4 +301,42 @@ footer.site .fine{max-width:720px}
         <button type="button" class="tpl-btn" data-tpl="compact">Compact</button>
       </div>
     </section>
+    <section aria-label="Resume editor">
+      <details class="ed" open>
+        <summary><span class="n">1</span> About you <span class="tag">name · contact · role</span></summary>
+        <div class="body">
+          <div class="grid2">
+            <div class="field"><label for="fName">Full name</label><input id="fName" type="text" autocomplete="name" placeholder="Asha Nair"></div>
+            <div class="field"><label for="fRole">Target role</label><input id="fRole" type="text" placeholder="Junior Full-Stack Developer"></div>
+          </div>
+          <div class="grid2">
+            <div class="field"><label for="fEmail">Email</label><input id="fEmail" type="email" autocomplete="email" placeholder="asha.nair@example.com"></div>
+            <div class="field"><label for="fPhone">Phone</label><input id="fPhone" type="tel" autocomplete="tel" placeholder="+91 98765 43210"></div>
+          </div>
+          <div class="grid2">
+            <div class="field"><label for="fLoc">City</label><input id="fLoc" type="text" placeholder="Bengaluru, Karnataka"></div>
+            <div class="field"><label for="fLink">Portfolio / LinkedIn (optional)</label><input id="fLink" type="text" placeholder="linkedin.com/in/asha-nair"></div>
+          </div>
+          <p class="hint">Skip the photo, date of birth and full address — Indian recruiters do not need them, and they waste your first lines.</p>
+        </div>
+      </details>
+
+      <details class="ed">
+        <summary><span class="n">2</span> Summary <span class="tag">aim for 20–60 words</span></summary>
+        <div class="body">
+          <div class="field"><label for="fSummary">Two or three lines about what you do and what you have shipped</label>
+          <textarea id="fSummary" rows="3" placeholder="B.Tech IT graduate who builds fast, accessible web apps…"></textarea></div>
+          <p class="hint"><span id="sumWords">0</span> words. A good summary names your field, one proof point with a number, and the role you want next.</p>
+        </div>
+      </details>
+
+      <details class="ed">
+        <summary><span class="n">3</span> Skills <span class="tag">at least 5, most relevant first</span></summary>
+        <div class="body">
+          <div class="field"><label for="skillInput">Add a skill, press Enter</label>
+          <input id="skillInput" type="text" placeholder="e.g. React"></div>
+          <div class="skills" id="skillChips"></div>
+          <p class="hint">List tools you can actually use on day one. Match the words in the job post — the software looks for them.</p>
+        </div>
+      </details>
 <!-- @@NEXT@@ -->
