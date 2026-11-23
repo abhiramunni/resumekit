@@ -645,4 +645,59 @@ function renderEdu(){
     inp.addEventListener('input', function(){ state.resume.edu[parseInt(inp.getAttribute('data-edu-note'),10)].note=inp.value; save(); renderPreview(); });
   });
 }
+function atsChecks(r){
+  var bullets=allBullets(r);
+  var q=bullets.filter(function(b){ return /\d/.test(b); }).length;
+  var v=bullets.filter(function(b){ return startsVerb(b); }).length;
+  var lines=estimateLines(r);
+  var words=wordCount(r.summary);
+  return [
+    {label:'Your name is on the page', pts:10, pass:!!String(r.name||'').trim()},
+    {label:'Email and phone are listed', pts:10, pass:/.+@.+\..+/.test(String(r.email||'')) && String(r.phone||'').replace(/\D/g,'').length>=6},
+    {label:'Location is listed', pts:5, pass:!!String(r.loc||'').trim()},
+    {label:'Summary is 20–60 words', pts:10, pass:words>=20 && words<=60},
+    {label:'At least 5 skills', pts:10, pass:(r.skills||[]).length>=5},
+    {label:'At least 3 experience bullets', pts:10, pass:bullets.length>=3},
+    {label:'Half or more bullets have a number', pts:15, pass:bullets.length>0 && q/bullets.length>=0.5},
+    {label:'Most bullets start with an action verb', pts:15, pass:bullets.length>0 && v/bullets.length>=0.8},
+    {label:'Education is listed', pts:5, pass:(r.edu||[]).length>0 && !!String((r.edu[0]||{}).degree||'').trim()},
+    {label:'Fits on one page (about 42 lines)', pts:10, pass:lines<=42}
+  ];
+}
+function scoreATS(r){
+  return atsChecks(r).reduce(function(s,c){ return s+(c.pass?c.pts:0); },0);
+}
+function renderATS(){
+  var r=state.resume, score=scoreATS(r);
+  var el=document.getElementById('atsScore'); if(el) el.textContent=score;
+  var mini=document.getElementById('miniScore'); if(mini) mini.textContent=score;
+  var ring=document.getElementById('ringFg');
+  if(ring){
+    var C=351.8;
+    ring.style.strokeDashoffset=String(C*(1-score/100));
+    ring.setAttribute('stroke', score>=80?'#2e7d4f':score>=55?'#b4762a':'#b3361f');
+  }
+  var verdict=document.getElementById('atsVerdict');
+  if(verdict){
+    verdict.textContent = score>=90 ? 'Excellent — this would sail through most screening software.'
+      : score>=70 ? 'Strong — fix the red items below and you are nearly there.'
+      : score>=45 ? 'Getting there — the red items are the quickest wins.'
+      : 'Early days — start with your name, contact details and one quantified bullet.';
+  }
+  var list=document.getElementById('atsList');
+  if(list){
+    var okSvg='<svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="#2e7d4f"/><path d="M4.5 8.2l2.4 2.4 4.6-5" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>';
+    var noSvg='<svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="none" stroke="#b3361f" stroke-width="1.6"/><path d="M5.5 5.5l5 5M10.5 5.5l-5 5" stroke="#b3361f" stroke-width="1.6" stroke-linecap="round"/></svg>';
+    list.innerHTML=atsChecks(r).map(function(c){
+      return '<li class="'+(c.pass?'pass':'fail')+'">'+(c.pass?okSvg:noSvg)+'<span><b>'+c.pts+' pts</b> — '+esc(c.label)+'</span></li>';
+    }).join('');
+  }
+  var lines=estimateLines(r), pages=Math.max(1, Math.ceil(lines/42));
+  var ll=document.getElementById('lenLabel'); if(ll) ll.textContent='Estimated length: '+lines+' lines · '+pages+(pages===1?' page':' pages');
+  var lv=document.getElementById('lenVerdict');
+  if(lv){ lv.textContent=pages===1?'Fits on one page':'Spills onto page '+pages; lv.style.color=pages===1?'var(--ok)':'var(--bad)'; }
+  var lf=document.getElementById('lenFill');
+  if(lf){ lf.style.width=Math.min(100, Math.round(lines/42*100))+'%'; lf.className=pages===1?'':'over'; lf.classList.toggle('over', pages>1); }
+  var sw=document.getElementById('sumWords'); if(sw) sw.textContent=wordCount(r.summary);
+}
 <!-- @@NEXT@@ -->
