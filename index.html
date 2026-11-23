@@ -521,4 +521,128 @@ function allBullets(r){
   (r.exp||[]).forEach(function(e){ (e.bullets||[]).forEach(function(b){ if(String(b).trim()) out.push(String(b).trim()); }); });
   return out;
 }
+function estimateLines(r){
+  var n=3;
+  n+=Math.ceil(wordCount(r.summary)/12)||0;
+  n+=Math.ceil((r.skills||[]).length/4);
+  (r.exp||[]).forEach(function(e){
+    n+=2;
+    (e.bullets||[]).forEach(function(b){ if(String(b).trim()) n+=Math.max(1, Math.ceil(String(b).length/72)); });
+  });
+  (r.edu||[]).forEach(function(){ n+=2; });
+  n+=4;
+  return n;
+}
+function renderPreview(){
+  var r=state.resume, sheet=document.getElementById('sheet');
+  if(!sheet) return;
+  var contact=[r.email, r.phone, r.loc, r.link].filter(function(x){ return String(x||'').trim(); }).map(esc).join(' &nbsp;·&nbsp; ');
+  var skillsHtml=(r.skills||[]).map(function(s){ return '<span>'+esc(s)+'</span>'; }).join('');
+  var expHtml=(r.exp||[]).map(function(e){
+    var bl=(e.bullets||[]).filter(function(b){ return String(b).trim(); }).map(function(b){ return '<li>'+esc(b)+'</li>'; }).join('');
+    return '<div class="pv-job"><div class="t"><span>'+esc(e.role)+'</span><span>'+esc(e.dates)+'</span></div><div class="o">'+esc(e.org)+'</div><ul>'+bl+'</ul></div>';
+  }).join('');
+  var eduHtml=(r.edu||[]).map(function(e){
+    return '<div class="pv-edu"><div class="t"><span>'+esc(e.degree)+'</span><span>'+esc(e.dates)+'</span></div><div class="o">'+esc(e.school)+(e.note?' — '+esc(e.note):'')+'</div></div>';
+  }).join('');
+  var main='<div class="main">'
+    +'<div class="pv-name">'+esc(r.name||'Your Name')+'</div>'
+    +'<div class="pv-role">'+esc(r.role||'Target Role')+'</div>'
+    +'<div class="pv-contact">'+contact+'</div><hr>'
+    +(r.summary?'<h3>Summary</h3><p>'+esc(r.summary)+'</p>':'')
+    +(skillsHtml?'<h3>Skills</h3><div class="pv-skills">'+skillsHtml+'</div>':'')
+    +(expHtml?'<h3>Experience &amp; Projects</h3>'+expHtml:'')
+    +(eduHtml?'<h3>Education</h3>'+eduHtml:'')
+    +'</div>';
+  if(state.template==='editorial'){
+    sheet.className='tpl-editorial';
+    sheet.innerHTML='<div class="side"><div class="pv-name">'+esc(r.name||'Your Name')+'</div><div class="pv-contact">'+contact+'</div>'
+      +(skillsHtml?'<h3>Skills</h3><div class="pv-skills">'+skillsHtml+'</div>':'')
+      +(eduHtml?'<h3>Education</h3>'+eduHtml:'')+'</div>'
+      +'<div class="main"><div class="pv-role">'+esc(r.role||'Target Role')+'</div><hr>'
+      +(r.summary?'<h3>Summary</h3><p>'+esc(r.summary)+'</p>':'')
+      +(expHtml?'<h3>Experience &amp; Projects</h3>'+expHtml:'')+'</div>';
+  } else {
+    sheet.className=state.template==='compact'?'tpl-compact':'tpl-classic';
+    sheet.innerHTML=main;
+  }
+  var lines=estimateLines(r), pages=Math.max(1, Math.ceil(lines/42));
+  var pill=document.getElementById('pagePill');
+  if(pill){ pill.textContent=pages===1?'1 page':pages+' pages'; pill.className='pill '+(pages===1?'ok':'bad'); }
+}
+function renderSkills(){
+  var box=document.getElementById('skillChips'); if(!box) return;
+  box.innerHTML=(state.resume.skills||[]).map(function(s,i){
+    return '<span class="chip">'+esc(s)+' <button type="button" data-del-skill="'+i+'" aria-label="Remove '+esc(s)+'">×</button></span>';
+  }).join('') || '<span class="helper">No skills yet — add your strongest one first.</span>';
+  qa('[data-del-skill]').forEach(function(b){
+    b.addEventListener('click', function(){
+      state.resume.skills.splice(parseInt(b.getAttribute('data-del-skill'),10),1);
+      save(); renderSkills(); renderPreview(); renderATS();
+    });
+  });
+}
+function renderExp(){
+  var box=document.getElementById('expList'); if(!box) return;
+  box.innerHTML=(state.resume.exp||[]).map(function(e,i){
+    return '<div class="exp-card" data-exp="'+i+'">'
+      +'<div class="rowline"><b>'+esc(e.role||'Untitled role')+'</b><button type="button" class="linkbtn" data-del-exp="'+i+'">Remove</button></div>'
+      +'<div class="grid2"><div class="field"><label>Role / title</label><input type="text" data-exp-role="'+i+'" value="'+esc(e.role)+'"></div>'
+      +'<div class="field"><label>Dates</label><input type="text" data-exp-dates="'+i+'" value="'+esc(e.dates)+'" placeholder="Jan 2025 – Apr 2025"></div></div>'
+      +'<div class="field"><label>Organisation</label><input type="text" data-exp-org="'+i+'" value="'+esc(e.org)+'"></div>'
+      +'<div class="field"><label>Bullets — one per line</label><textarea data-exp-bullets="'+i+'" rows="3">'+esc((e.bullets||[]).join('\n'))+'</textarea></div>'
+      +'</div>';
+  }).join('') || '<p class="helper">No experience yet. Add a project, internship or part-time role — projects count for freshers.</p>';
+  qa('[data-del-exp]').forEach(function(b){
+    b.addEventListener('click', function(){
+      state.resume.exp.splice(parseInt(b.getAttribute('data-del-exp'),10),1);
+      save(); renderExp(); renderPreview(); renderATS();
+    });
+  });
+  qa('[data-exp-role]').forEach(function(inp){
+    inp.addEventListener('input', function(){ state.resume.exp[parseInt(inp.getAttribute('data-exp-role'),10)].role=inp.value; save(); renderPreview(); renderATS(); });
+  });
+  qa('[data-exp-dates]').forEach(function(inp){
+    inp.addEventListener('input', function(){ state.resume.exp[parseInt(inp.getAttribute('data-exp-dates'),10)].dates=inp.value; save(); renderPreview(); });
+  });
+  qa('[data-exp-org]').forEach(function(inp){
+    inp.addEventListener('input', function(){ state.resume.exp[parseInt(inp.getAttribute('data-exp-org'),10)].org=inp.value; save(); renderPreview(); });
+  });
+  qa('[data-exp-bullets]').forEach(function(ta){
+    ta.addEventListener('input', function(){
+      state.resume.exp[parseInt(ta.getAttribute('data-exp-bullets'),10)].bullets=ta.value.split('\n');
+      save(); renderPreview(); renderATS();
+    });
+  });
+}
+function renderEdu(){
+  var box=document.getElementById('eduList'); if(!box) return;
+  box.innerHTML=(state.resume.edu||[]).map(function(e,i){
+    return '<div class="exp-card" data-edu="'+i+'">'
+      +'<div class="rowline"><b>'+esc(e.degree||'Untitled qualification')+'</b><button type="button" class="linkbtn" data-del-edu="'+i+'">Remove</button></div>'
+      +'<div class="grid2"><div class="field"><label>Degree / course</label><input type="text" data-edu-degree="'+i+'" value="'+esc(e.degree)+'"></div>'
+      +'<div class="field"><label>Years</label><input type="text" data-edu-dates="'+i+'" value="'+esc(e.dates)+'" placeholder="2021 – 2025"></div></div>'
+      +'<div class="field"><label>College / school</label><input type="text" data-edu-school="'+i+'" value="'+esc(e.school)+'"></div>'
+      +'<div class="field"><label>Note (optional)</label><input type="text" data-edu-note="'+i+'" value="'+esc(e.note||'')+'" placeholder="e.g. Final-year project: alumni portal"></div>'
+      +'</div>';
+  }).join('') || '<p class="helper">No education added yet.</p>';
+  qa('[data-del-edu]').forEach(function(b){
+    b.addEventListener('click', function(){
+      state.resume.edu.splice(parseInt(b.getAttribute('data-del-edu'),10),1);
+      save(); renderEdu(); renderPreview(); renderATS();
+    });
+  });
+  qa('[data-edu-degree]').forEach(function(inp){
+    inp.addEventListener('input', function(){ state.resume.edu[parseInt(inp.getAttribute('data-edu-degree'),10)].degree=inp.value; save(); renderPreview(); });
+  });
+  qa('[data-edu-dates]').forEach(function(inp){
+    inp.addEventListener('input', function(){ state.resume.edu[parseInt(inp.getAttribute('data-edu-dates'),10)].dates=inp.value; save(); renderPreview(); });
+  });
+  qa('[data-edu-school]').forEach(function(inp){
+    inp.addEventListener('input', function(){ state.resume.edu[parseInt(inp.getAttribute('data-edu-school'),10)].school=inp.value; save(); renderPreview(); });
+  });
+  qa('[data-edu-note]').forEach(function(inp){
+    inp.addEventListener('input', function(){ state.resume.edu[parseInt(inp.getAttribute('data-edu-note'),10)].note=inp.value; save(); renderPreview(); });
+  });
+}
 <!-- @@NEXT@@ -->
