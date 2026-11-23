@@ -700,4 +700,81 @@ function renderATS(){
   if(lf){ lf.style.width=Math.min(100, Math.round(lines/42*100))+'%'; lf.className=pages===1?'':'over'; lf.classList.toggle('over', pages>1); }
   var sw=document.getElementById('sumWords'); if(sw) sw.textContent=wordCount(r.summary);
 }
+function scoreBullet(text){
+  var t=String(text||'').trim();
+  if(!t) return {score:0, verdict:'Type a bullet to score it.', tips:[]};
+  var words=t.split(/\s+/).filter(Boolean).length;
+  var verb=startsVerb(t), num=/\d/.test(t), weak=WEAK_RE.test(t);
+  var s=0, tips=[];
+  if(verb){ s+=40; } else { tips.push('Start with an action verb — Built, Cut, Led, Fixed.'); }
+  if(num){ s+=35; } else { tips.push('Add a number — people, rupees, percent, days.'); }
+  if(words>=8 && words<=25){ s+=15; } else if(words<8){ tips.push('Too short to say anything — add what you built and who used it.'); } else { tips.push('Too long — cut it to one line, under 25 words.'); }
+  if(!weak){ s+=10; } else { tips.push('Drop filler like "responsible for" or "various" — say what you actually did.'); }
+  var verdict = s>=85 ? 'Strong — a recruiter would remember this one.'
+    : s>=60 ? 'Good — one tweak away from strong.'
+    : s>=35 ? 'Okay — it needs a verb or a number.'
+    : 'Weak — this reads like a job description, not an achievement.';
+  return {score:s, verdict:verdict, tips:tips};
+}
+function renderCoach(){
+  var input=document.getElementById('coachInput'); if(!input) return;
+  var res=scoreBullet(input.value);
+  var fill=document.getElementById('coachFill'), sc=document.getElementById('coachScore'), vd=document.getElementById('coachVerdict');
+  if(fill) fill.style.width=res.score+'%';
+  if(fill) fill.style.background=res.score>=85?'var(--ok)':res.score>=60?'var(--bronze)':'var(--bad)';
+  if(sc) sc.textContent=input.value.trim()?res.score+' / 100':'– / 100';
+  if(vd){
+    vd.innerHTML='<b>'+esc(res.verdict)+'</b>'+(res.tips.length?'<br>'+res.tips.map(esc).join('<br>'):'');
+  }
+}
+function plainText(r){
+  var L=[];
+  L.push(r.name||'Your Name');
+  L.push(r.role||'');
+  L.push([r.email,r.phone,r.loc,r.link].filter(function(x){ return String(x||'').trim(); }).join(' | '));
+  L.push('');
+  if(r.summary){ L.push('SUMMARY'); L.push(r.summary); L.push(''); }
+  if((r.skills||[]).length){ L.push('SKILLS'); L.push(r.skills.join(', ')); L.push(''); }
+  if((r.exp||[]).length){
+    L.push('EXPERIENCE & PROJECTS');
+    r.exp.forEach(function(e){
+      L.push(e.role+' — '+e.org+' ('+e.dates+')');
+      (e.bullets||[]).forEach(function(b){ if(String(b).trim()) L.push('• '+String(b).trim()); });
+      L.push('');
+    });
+  }
+  if((r.edu||[]).length){
+    L.push('EDUCATION');
+    r.edu.forEach(function(e){ L.push(e.degree+' — '+e.school+' ('+e.dates+')'+(e.note?' — '+e.note:'')); });
+  }
+  return L.join('\n');
+}
+function renderVersions(){
+  var box=document.getElementById('verList'); if(!box) return;
+  box.innerHTML=(state.versions||[]).map(function(v,i){
+    return '<li><span class="nm">'+esc(v.name)+'</span><span class="dt">'+esc(v.savedAt||'')+'</span><span class="acts">'
+      +'<button type="button" class="btn small" data-ver-load="'+i+'">Load</button>'
+      +'<button type="button" class="btn small ghost" data-ver-del="'+i+'">Delete</button></span></li>';
+  }).join('') || '<li><span class="helper">No saved versions yet.</span></li>';
+  qa('[data-ver-load]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var v=state.versions[parseInt(b.getAttribute('data-ver-load'),10)];
+      if(!v) return;
+      state.resume=JSON.parse(JSON.stringify(v.resume));
+      save(); fillEditor(); renderAll(); toast('Loaded version "'+v.name+'".');
+    });
+  });
+  qa('[data-ver-del]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var v=state.versions[parseInt(b.getAttribute('data-ver-del'),10)];
+      state.versions.splice(parseInt(b.getAttribute('data-ver-del'),10),1);
+      save(); renderVersions(); toast('Deleted version "'+(v&&v.name)+'".');
+    });
+  });
+}
+function todayStr(){
+  var d=new Date();
+  var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear();
+}
 <!-- @@NEXT@@ -->
